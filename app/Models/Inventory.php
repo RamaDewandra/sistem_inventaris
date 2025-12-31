@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Inventory extends Model
 {
@@ -17,6 +18,7 @@ class Inventory extends Model
         'description',
         'stock',
         'category_id',
+        'image'
     ];
 
     public function category(): BelongsTo

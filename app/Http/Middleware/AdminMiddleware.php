@@ -8,18 +8,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    
-    public function handle(Request $request, Closure $next): Response
-{
-    if (auth()->check() && auth()->user()->role === 'admin') {
+   public function handle(Request $request, Closure $next, string $role)
+    {
+        if (!auth()->check()) {
+            abort(403);
+        }
+
+        if (auth()->user()->role !== $role) {
+            abort(403);
+        }
+
         return $next($request);
     }
-    
-    abort(403, 'Akses ditolak! Halaman ini khusus untuk Admin.');
-}
 }

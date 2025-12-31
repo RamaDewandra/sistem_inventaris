@@ -3,62 +3,87 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Inventory;
+use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $categories = Inventory::with('category')->latest()->get();
+        return view('inventories.index', compact('inventories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $categories = Category::all();
+        return view('inventories.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'stock' => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('inventories', 'public');
+            $validated['image'] = $path;
+        }
+
+        Inventory::create($validated);
+
+        return redirect()->route('inventories.index')->with('success', 'Inventory berhasil dibuat!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Inventory $inventory)
     {
-        //
+        return view('inventories.show', compact('inventory'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Inventory $inventory)
     {
-        //
+        $categories = Category::all();
+        return view('inventories.edit', compact('inventory', 'categories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Inventory $inventory)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'stock' => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($inventory->image) {
+                Storage::disk('public')->delete($inventory->image);
+            }
+            
+            $path = $request->file('image')->store('inventories', 'public');
+            $validated['image'] = $path;
+        }
+
+        $inventory->update($validated);
+
+        return redirect()->route('inventories.index')->with('success', 'Inventory berhasil diperbarui!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Inventory $inventory)
     {
-        //
+        if ($inventory->image) {
+            Storage::disk('public')->delete($inventory->image);
+        }
+
+        $inventory->delete();
+
+        return redirect()->route('inventories.index')->with('success', 'Inventory berhasil dihapus!');
     }
 }

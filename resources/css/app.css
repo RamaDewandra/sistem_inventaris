@@ -1,3 +1,10 @@
+/* 1. Import diletakkan paling atas */
+@import "flowbite/src/themes/default";
+
+/* 2. Baru kemudian directive tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 3. Custom variant atau kode CSS tambahan lainnya di bawah */
+@custom-variant dark (&:where(.dark, .dark *));
