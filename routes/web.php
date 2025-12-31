@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -9,9 +10,8 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [CategoryController::class, 'index'])
+        ->name('dashboard');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
@@ -25,14 +25,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/inventories', [InventoryController::class, 'index'])->name('inventories.index');
-//     Route::get('/inventories/create', [InventoryController::class, 'create'])->name('inventories.create');
-//     Route::post('/inventories', [InventoryController::class, 'store'])->name('inventories.store');
-//     Route::get('/inventories/{inventory}', [InventoryController::class, 'show'])->name('inventories.show');
-//     Route::get('/inventories/{inventory}/edit', [InventoryController::class, 'edit'])->name('inventories.edit');
-//     Route::put('/inventories/{inventory}', [InventoryController::class, 'update'])->name('inventories.update');
-//     Route::delete('/inventories/{inventory}', [InventoryController::class, 'destroy'])->name('inventories.destroy');
-// });
+Route::middleware(['auth'])->group(function () {
+    Route::get('/inventories', [InventoryController::class, 'index'])->name('inventories.index');
+    Route::get('/inventories/create', [InventoryController::class, 'create'])->name('inventories.create');
+    Route::post('/inventories', [InventoryController::class, 'store'])->name('inventories.store');
+    Route::get('/inventories/{inventory}', [InventoryController::class, 'show'])->name('inventories.show');
+    Route::get('/inventories/{inventory}/edit', [InventoryController::class, 'edit'])->name('inventories.edit');
+    Route::put('/inventories/{inventory}', [InventoryController::class, 'update'])->name('inventories.update');
+    Route::delete('/inventories/{inventory}', [InventoryController::class, 'destroy'])->name('inventories.destroy');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{inventory}', [CategoryController::class, 'show'])->name('categories.show');
+    Route::get('/categories/{inventory}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+    Route::put('/categories/{inventory}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{inventory}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+});
 
 require __DIR__.'/auth.php';

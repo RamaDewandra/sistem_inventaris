@@ -17,6 +17,6 @@ class Category extends Model
 
     public function inventories(): HasMany
     {
-        return $this->hasMany(Post::class, 'category_id');
+        return $this->hasMany(Inventory::class, 'category_id');
     }
 }
