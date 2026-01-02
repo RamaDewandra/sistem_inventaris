@@ -44,5 +44,14 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/categories/{inventory}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{inventory}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
+// routes/web.php
+Route::get('/admin-test', function () {
+    return view('layouts.admin');
+});
+
+Route::get('/admin', function () {
+    return view('admin.dashboard');
+});
+
 
 require __DIR__.'/auth.php';
